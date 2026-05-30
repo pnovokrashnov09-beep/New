@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="ru" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Адрес доставки — Sharm El Sheikh</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&family=Noto+Sans+Arabic:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --red: #C8102E; --red-dark: #9B0B22;
+    --dark: #1A1007; --gold: #D4A017;
+    --green: #2D6A4F; --gray: #6B6B6B;
+    --light: #F5EFE6; --cream: #FDF6EC;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--dark); min-height: 100vh; }
+  body.ar { font-family: 'Noto Sans Arabic', 'DM Sans', sans-serif; }
+
+  /* HEADER */
+  .header {
+    background: var(--dark); color: white;
+    padding: 0.9rem 1.5rem;
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 1rem; position: sticky; top: 0; z-index: 10;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.3);
+  }
+  .header h1 { font-size: 0.95rem; font-weight: 600; }
+  .lang-row { display: flex; gap: 0.3rem; }
+  .lang-btn {
+    padding: 0.25rem 0.55rem; border: 1.5px solid rgba(255,255,255,0.25);
+    border-radius: 6px; cursor: pointer; font-size: 0.7rem; font-weight: 700;
+    background: transparent; color: #aaa; transition: all 0.2s; font-family: inherit;
+  }
+  .lang-btn.active { border-color: var(--gold); color: var(--gold); }
+
+  /* CONTAINER */
+  .container { max-width: 680px; margin: 0 auto; padding: 1.2rem; }
+
+  .section-label {
+    font-size: 0.88rem; font-weight: 700;
+    margin-bottom: 0.6rem; margin-top: 1.2rem;
+    display: flex; align-items: center; gap: 0.4rem;
+  }
+  .section-label:first-child { margin-top: 0; }
+
+  /* MAP */
+  .map-wrap {
+    width: 100%; border-radius: 14px; overflow: hidden;
+    border: 2px solid #ddd; background: #e8e0d8;
+    aspect-ratio: 16/9;
+  }
+  .map-wrap iframe { width: 100%; height: 100%; border: none; display: block; }
+
+  .hint { font-size: 0.78rem; color: var(--gray); text-align: center; margin: 0.4rem 0 1rem; }
+
+  /* ZONE BUTTONS */
+  .zones { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 0.75rem; }
+  .zone-btn {
+    padding: 0.35rem 0.85rem; background: white;
+    border: 1.5px solid #ddd; border-radius: 99px;
+    font-size: 0.8rem; cursor: pointer; font-family: inherit;
+    transition: all 0.15s;
+  }
+  .zone-btn:hover { border-color: var(--red); color: var(--red); }
+  .zone-btn.active { background: #fff5f7; border-color: var(--red); color: var(--red); font-weight: 600; }
+
+  /* INFO BOXES */
+  .info-box {
+    padding: 0.7rem 1rem; border-radius: 10px;
+    font-size: 0.85rem; margin-bottom: 0.75rem; display: none;
+  }
+  .info-box.show { display: block; }
+  .info-box.green { background: #d1fae5; color: #065f46; border: 1px solid #6ee7b7; }
+
+  /* DIVIDER */
+  .divider {
+    text-align: center; margin: 1rem 0 0.8rem;
+    color: #aaa; font-size: 0.8rem; position: relative;
+  }
+  .divider::before, .divider::after {
+    content: ''; position: absolute; top: 50%;
+    width: 44%; height: 1px; background: #ddd;
+  }
+  .divider::before { left: 0; } .divider::after { right: 0; }
+
+  /* FORM */
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+  @media(max-width:480px){ .grid2 { grid-template-columns: 1fr; } }
+
+  .field { margin-bottom: 0; }
+  .field label { display: block; font-size: 0.8rem; font-weight: 600; margin-bottom: 0.3rem; color: #444; }
+  .field input {
+    width: 100%; padding: 0.65rem 0.85rem;
+    border: 1.5px solid #ddd; border-radius: 8px;
+    font-size: 0.9rem; font-family: inherit; background: white;
+    transition: border-color 0.2s;
+  }
+  .field input:focus { outline: none; border-color: var(--red); }
+
+  /* CONFIRM BTN */
+  .confirm-btn {
+    width: 100%; margin-top: 1.4rem;
+    background: var(--red); color: white;
+    border: none; padding: 1rem;
+    border-radius: 12px; font-size: 1rem;
+    font-weight: 700; cursor: pointer; font-family: inherit;
+    transition: background 0.2s;
+  }
+  .confirm-btn:hover { background: var(--red-dark); }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1 id="headerTitle">📍 Адрес доставки — Sharm El Sheikh</h1>
+  <div class="lang-row">
+    <button class="lang-btn active" onclick="setLang('ru')">RU</button>
+    <button class="lang-btn" onclick="setLang('en')">EN</button>
+    <button class="lang-btn" onclick="setLang('ar')">AR</button>
+  </div>
+</div>
+
+<div class="container">
+
+  <div class="section-label">🗺️ <span id="lblMap">Карта Sharm El Sheikh</span></div>
+  <div class="map-wrap">
+    <iframe
+      src="https://www.openstreetmap.org/export/embed.html?bbox=34.34%2C27.82%2C34.48%2C28.05&layer=mapnik&marker=27.915%2C34.33"
+      allowfullscreen loading="lazy">
+    </iframe>
+  </div>
+  <div class="hint" id="hintMap">Карта показывает зону доставки Sharm El Sheikh</div>
+
+  <div class="section-label">🏘️ <span id="lblZone">Выберите район</span></div>
+  <div class="zones" id="zonesWrap">
+    <button class="zone-btn" onclick="selectZone('Naama Bay')">Naama Bay</button>
+    <button class="zone-btn" onclick="selectZone('Hadaba')">Hadaba</button>
+    <button class="zone-btn" onclick="selectZone('Sharks Bay')">Sharks Bay</button>
+    <button class="zone-btn" onclick="selectZone('Nabq')">Nabq</button>
+    <button class="zone-btn" onclick="selectZone('Ras Nasrani')">Ras Nasrani</button>
+    <button class="zone-btn" onclick="selectZone('Old Market')">Old Market</button>
+    <button class="zone-btn" onclick="selectZone('Montazah')">Montazah</button>
+    <button class="zone-btn" onclick="selectZone('Sharm El Maya')">Sharm El Maya</button>
+  </div>
+  <div class="info-box green" id="zoneBox"></div>
+
+  <div class="divider" id="lblDetails">+ детали адреса</div>
+
+  <div class="grid2">
+    <div class="field">
+      <label id="lblDistrict">Район / Area *</label>
+      <input type="text" id="fDistrict" placeholder="Naama Bay...">
+    </div>
+    <div class="field">
+      <label id="lblHotel">Отель / Hotel</label>
+      <input type="text" id="fHotel" placeholder="Sunrise, Rixos...">
+    </div>
+    <div class="field">
+      <label id="lblStreet">Улица / Street</label>
+      <input type="text" id="fStreet">
+    </div>
+    <div class="field">
+      <label id="lblBuilding">Здание / Building</label>
+      <input type="text" id="fBuilding">
+    </div>
+    <div class="field">
+      <label id="lblRoom">№ комнаты / Room</label>
+      <input type="text" id="fRoom" placeholder="205...">
+    </div>
+    <div class="field">
+      <label id="lblLandmark">Ориентир / Landmark</label>
+      <input type="text" id="fLandmark">
+    </div>
+  </div>
+
+  <button class="confirm-btn" id="confirmBtn" onclick="confirmAddress()">
+    ✅ Подтвердить адрес
+  </button>
+
+</div>
+
+<script>
+// ===== i18n =====
+const LANGS = {
+  ru: {
+    header: '📍 Адрес доставки — Sharm El Sheikh',
+    lblMap: 'Карта Sharm El Sheikh',
+    hint: 'Карта показывает зону доставки Sharm El Sheikh',
+    lblZone: 'Выберите район',
+    zoneChosen: '✅ Район выбран: ',
+    lblDetails: '+ детали адреса',
+    lblDistrict: 'Район *', lblHotel: 'Отель',
+    lblStreet: 'Улица', lblBuilding: 'Здание',
+    lblRoom: '№ комнаты', lblLandmark: 'Ориентир',
+    phDistrict: 'Naama Bay...', phHotel: 'Sunrise, Rixos...',
+    phStreet: 'Название улицы', phBuilding: 'Вилла, блок...',
+    phRoom: '205...', phLandmark: 'Рядом с рецепцией...',
+    confirmBtn: '✅ Подтвердить адрес',
+    errDistrict: 'Пожалуйста, укажите район доставки',
+    confirmed: 'Адрес подтверждён',
+    prefix: 'Sharm El Sheikh',
+  },
+  en: {
+    header: '📍 Delivery Address — Sharm El Sheikh',
+    lblMap: 'Map of Sharm El Sheikh',
+    hint: 'The map shows the Sharm El Sheikh delivery zone',
+    lblZone: 'Select your area',
+    zoneChosen: '✅ Area selected: ',
+    lblDetails: '+ address details',
+    lblDistrict: 'Area *', lblHotel: 'Hotel',
+    lblStreet: 'Street', lblBuilding: 'Building',
+    lblRoom: 'Room No.', lblLandmark: 'Landmark',
+    phDistrict: 'Naama Bay...', phHotel: 'Sunrise, Rixos...',
+    phStreet: 'Street name', phBuilding: 'Villa, block...',
+    phRoom: '205...', phLandmark: 'Near reception...',
+    confirmBtn: '✅ Confirm Address',
+    errDistrict: 'Please select a delivery area',
+    confirmed: 'Address confirmed',
+    prefix: 'Sharm El Sheikh',
+  },
+  ar: {
+    header: '📍 عنوان التوصيل — شرم الشيخ',
+    lblMap: 'خريطة شرم الشيخ',
+    hint: 'الخريطة تُظهر منطقة التوصيل في شرم الشيخ',
+    lblZone: 'اختر المنطقة',
+    zoneChosen: '✅ المنطقة المختارة: ',
+    lblDetails: '+ تفاصيل العنوان',
+    lblDistrict: 'المنطقة *', lblHotel: 'الفندق',
+    lblStreet: 'الشارع', lblBuilding: 'المبنى',
+    lblRoom: 'رقم الغرفة', lblLandmark: 'معلم مميز',
+    phDistrict: 'نعمة باي...', phHotel: 'صنرايز، ريكسوس...',
+    phStreet: 'اسم الشارع', phBuilding: 'فيلا، بلوك...',
+    phRoom: '205...', phLandmark: 'بالقرب من الاستقبال...',
+    confirmBtn: '✅ تأكيد العنوان',
+    errDistrict: 'يرجى تحديد منطقة التوصيل',
+    confirmed: 'تم تأكيد العنوان',
+    prefix: 'شرم الشيخ',
+  }
+};
+
+let lang = 'ru';
+
+function setLang(l) {
+  lang = l;
+  document.documentElement.lang = l;
+  document.documentElement.dir = l === 'ar' ? 'rtl' : 'ltr';
+  document.body.classList.toggle('ar', l === 'ar');
+  document.querySelectorAll('.lang-btn').forEach((b,i) => {
+    b.classList.toggle('active', ['ru','en','ar'][i] === l);
+  });
+  applyLang();
+}
+
+function applyLang() {
+  const T = LANGS[lang];
+  document.getElementById('headerTitle').textContent = T.header;
+  document.getElementById('lblMap').textContent = T.lblMap;
+  document.getElementById('hintMap').textContent = T.hint;
+  document.getElementById('lblZone').textContent = T.lblZone;
+  document.getElementById('lblDetails').textContent = T.lblDetails;
+  document.getElementById('lblDistrict').textContent = T.lblDistrict;
+  document.getElementById('lblHotel').textContent = T.lblHotel;
+  document.getElementById('lblStreet').textContent = T.lblStreet;
+  document.getElementById('lblBuilding').textContent = T.lblBuilding;
+  document.getElementById('lblRoom').textContent = T.lblRoom;
+  document.getElementById('lblLandmark').textContent = T.lblLandmark;
+  document.getElementById('fDistrict').placeholder = T.phDistrict;
+  document.getElementById('fHotel').placeholder = T.phHotel;
+  document.getElementById('fStreet').placeholder = T.phStreet;
+  document.getElementById('fBuilding').placeholder = T.phBuilding;
+  document.getElementById('fRoom').placeholder = T.phRoom;
+  document.getElementById('fLandmark').placeholder = T.phLandmark;
+  document.getElementById('confirmBtn').textContent = T.confirmBtn;
+}
+
+// ===== ZONE SELECT =====
+let chosenZone = '';
+
+function selectZone(zone) {
+  chosenZone = zone;
+  document.getElementById('fDistrict').value = zone;
+  document.querySelectorAll('.zone-btn').forEach(b => {
+    b.classList.toggle('active', b.textContent.trim() === zone);
+  });
+  const box = document.getElementById('zoneBox');
+  box.textContent = LANGS[lang].zoneChosen + zone;
+  box.classList.add('show');
+}
+
+// ===== CONFIRM =====
+function confirmAddress() {
+  const parts = [
+    document.getElementById('fDistrict').value.trim(),
+    document.getElementById('fHotel').value.trim(),
+    document.getElementById('fStreet').value.trim(),
+    document.getElementById('fBuilding').value.trim(),
+    document.getElementById('fRoom').value.trim(),
+    document.getElementById('fLandmark').value.trim(),
+  ].filter(Boolean);
+
+  if (!parts[0]) {
+    alert(LANGS[lang].errDistrict);
+    document.getElementById('fDistrict').focus();
+    return;
+  }
+
+  const fullAddress = LANGS[lang].prefix + ', ' + parts.join(', ');
+
+  // Return to main site with address as URL param
+  const base = window.location.href.replace(/[^?#]*[/]/, '').replace('map_base.html', '');
+  const indexUrl = window.location.href.replace(/map_base\.html.*$/, '') + 'index.html'
+    + '?addr=' + encodeURIComponent(fullAddress)
+    + '&lang=' + lang;
+  window.location.href = indexUrl;
+}
+
+// ===== INIT =====
+// Read lang from URL param or sessionStorage
+(function() {
+  const params = new URLSearchParams(window.location.search);
+  const l = params.get('lang') || (function(){ try{ return sessionStorage.getItem('pizzaLang'); }catch(e){return null;} })() || 'ru';
+  setLang(l);
+})();
+</script>
+</body>
+</html>
